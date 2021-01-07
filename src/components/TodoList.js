@@ -7,9 +7,16 @@ import TodoItem from "./TodoItem";
 
 class TodoList extends Component {
   render() {
+    console.log(this.props);
     return (
       <ul className="todo-list">
-        <TodoItem />
+        {this.props.todoLists.map((list) => (
+          <TodoItem
+            key={list.id}
+            list={list}
+            onChangeComplete={this.props.onChangeComplete}
+          />
+        ))}
       </ul>
     );
   }

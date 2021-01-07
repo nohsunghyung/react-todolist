@@ -2,9 +2,11 @@ import React, { Component } from "react";
 
 class TodoItem extends Component {
   render() {
+    const { list, onChangeComplete } = this.props;
+    const { id, text, isComplete } = list;
     return (
-      <li className="list-item">
-        <div className="text">todoList</div>
+      <li className={isComplete ? "list-item active" : "list-item"}>
+        <div className="text">{text}</div>
         {/* 수정 */}
         {/* <div>
                 <input
@@ -13,7 +15,12 @@ class TodoItem extends Component {
                 />
               </div> */}
         <div className="checked">
-          <input type="checkbox" id="chk1" />
+          <input
+            type="checkbox"
+            id="chk1"
+            value={isComplete}
+            onChange={() => onChangeComplete(id)}
+          />
         </div>
         <div className="button">
           <button type="button" className="btn btn-modify">
