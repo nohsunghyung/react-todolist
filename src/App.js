@@ -20,10 +20,11 @@ class App extends Component {
         },
         {
           id: 3,
-          text: "할일3",
+          text: "할일2",
           isComplete: false,
         },
       ],
+      nextId: 4,
     };
   }
   // 등록 input 변경
@@ -35,23 +36,32 @@ class App extends Component {
   };
   // todo의 완료상태를 변경
   onChangeComplete = (id) => {
-    // 수정은 map함수
-    // 등록 or 추가 concat함수
-    // 삭제 filter 함수
-    // state의 배열과 객체를 변경할때는 직접 수정은 안되고 새로운 배열을 넣어줘야함
-
-    const newTodoList = this.state.todoLists.map((info) => {
-      if (info.id === id) {
-        return { ...info, isComplete: !info.isComplete };
+    const newLists = this.state.todoLists.map((list) => {
+      if (list.id === id) {
+        return { ...list, isComplete: !list.isComplete };
       } else {
-        return info;
+        return list;
       }
 
-      // return info.id === id ? { ...info, isComplete: !info.isComplete } : info;
+      // return list.id === id ? { ...list, isComplete: true } : list;
     });
 
     this.setState({
-      todoLists: newTodoList,
+      todoLists: newLists,
+    });
+  };
+  onSubmitForm = () => {
+    const newItem = {
+      id: this.state.nextId,
+      text: this.state.inputValue,
+      isComplete: false,
+    };
+
+    // 추가기능구현
+    const newList = [...this.state.todoLists, newItem];
+    this.setState({
+      todoLists: newList,
+      nextId: this.state.nextId + 1,
     });
   };
   render() {
@@ -63,6 +73,7 @@ class App extends Component {
             <InsertForm
               inputValue={this.state.inputValue}
               onChangeValue={this.onChangeValue}
+              onSubmitForm={this.onSubmitForm}
             />
             <TodoList
               todoLists={this.state.todoLists}
