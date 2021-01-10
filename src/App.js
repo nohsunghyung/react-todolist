@@ -12,16 +12,19 @@ class App extends Component {
           id: 1,
           text: "할일1",
           isComplete: false, // 완료된 할일 체크
+          isUpdate: false,
         },
         {
           id: 2,
           text: "할일2",
           isComplete: false,
+          isUpdate: false,
         },
         {
           id: 3,
           text: "할일2",
           isComplete: false,
+          isUpdate: false,
         },
       ],
       nextId: 4,
@@ -55,6 +58,7 @@ class App extends Component {
       id: this.state.nextId,
       text: this.state.inputValue,
       isComplete: false,
+      isUpdate: false,
     };
 
     // 추가기능구현
@@ -62,6 +66,35 @@ class App extends Component {
     this.setState({
       todoLists: newList,
       nextId: this.state.nextId + 1,
+    });
+  };
+  // 수정폼 변경
+  updateToggle = (id) => {
+    const newLists = this.state.todoLists.map((list) => {
+      if (list.id === id) {
+        return {
+          ...list,
+          isUpdate: !list.isUpdate,
+        };
+      } else {
+        return list;
+      }
+    });
+    this.setState({
+      todoLists: newLists,
+    });
+  };
+  // 업데이트 확인 버튼
+  updateSubmitForm = (id, updateInputValue) => {
+    const newList = this.state.todoLists.map((list) => {
+      if (list.id === id) {
+        return { ...list, text: updateInputValue, isUpdate: false };
+      } else {
+        return list;
+      }
+    });
+    this.setState({
+      todoLists: newList,
     });
   };
   render() {
@@ -78,6 +111,8 @@ class App extends Component {
             <TodoList
               todoLists={this.state.todoLists}
               onChangeComplete={this.onChangeComplete}
+              updateToggle={this.updateToggle}
+              updateSubmitForm={this.updateSubmitForm}
             />
           </div>
         </div>

@@ -7,13 +7,16 @@ import TodoItem from "./TodoItem";
 
 class TodoList extends Component {
   render() {
+    const { onChangeComplete, updateToggle, updateSubmitForm } = this.props;
     return (
       <ul className="todo-list">
         {this.props.todoLists.map((list) => (
           <TodoItem
             key={list.id}
             list={list}
-            onChangeComplete={this.props.onChangeComplete}
+            onChangeComplete={onChangeComplete}
+            updateToggle={updateToggle}
+            updateSubmitForm={updateSubmitForm}
           />
         ))}
       </ul>

@@ -1,51 +1,90 @@
 import React, { Component } from "react";
 
 class TodoItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      updateInputValue: "",
+    };
+  }
+  onChangeInpuValue = (e) => {
+    const value = e.target.value;
+    this.setState({
+      updateInputValue: value,
+    });
+  };
+  updateToggleFn = (id, text) => {
+    this.props.updateToggle(id);
+    this.setState({
+      updateInputValue: text,
+    });
+  };
   render() {
-    const { list, onChangeComplete } = this.props;
-    const { id, text, isComplete } = list;
+    const {
+      list,
+      onChangeComplete,
+      updateToggle,
+      updateSubmitForm,
+    } = this.props;
+    const { updateInputValue } = this.state;
+    const { id, text, isComplete, isUpdate } = list;
     return (
       <li className={isComplete ? "list-item active" : "list-item"}>
-        <div className="text">{text}</div>
-        {/* 수정 */}
-        {/* <div>
-                <input
-                  type="text"
-                  placeholder="todo를 적어주세요"
-                />
-              </div> */}
-        <div className="checked">
-          <input
-            type="checkbox"
-            id="chk1"
-            value={isComplete}
-            onChange={() => onChangeComplete(id)}
-          />
-        </div>
-        <div className="button">
-          <button type="button" className="btn btn-modify">
-            수정
-          </button>
-          <button type="button" className="btn btn-delete">
-            삭제
-          </button>
-        </div>
-        {/* 수정눌렀을경우 */}
-        {/* <div className="button">
-                  <button
-                    type="button"
-                    className="btn btn-ok"
-                  >
-                    확인
-                    </button>
-                  <button
-                    type="button"
-                    className="btn btn-cancel"
-                  >
-                    취소
-                    </button>
-                </div> */}
-        {/* 수정눌렀을경우 */}
+        {isUpdate ? (
+          <div>
+            <input
+              type="text"
+              placeholder="todo를 적어주세요"
+              value={updateInputValue}
+              onChange={this.onChangeInpuValue}
+            />
+          </div>
+        ) : (
+          <>
+            <div className="text">{text}</div>
+            <div className="checked">
+              <input
+                type="checkbox"
+                id="chk1"
+                value={isComplete}
+                onChange={() => onChangeComplete(id)}
+              />
+            </div>
+          </>
+        )}
+
+        {isUpdate ? (
+          /* 수정눌렀을경우 */
+          <div className="button">
+            <button
+              type="button"
+              className="btn btn-ok"
+              onClick={() => updateSubmitForm(id, updateInputValue)}
+            >
+              수정완료
+            </button>
+            <button
+              type="button"
+              className="btn btn-cancel"
+              onClick={() => updateToggle(id)}
+            >
+              취소
+            </button>
+          </div>
+        ) : (
+          <div className="button">
+            <button
+              type="button"
+              className="btn btn-modify"
+              onClick={() => this.updateToggleFn(id, text)}
+            >
+              수정
+            </button>
+            <button type="button" className="btn btn-delete">
+              삭제
+            </button>
+          </div>
+        )}
       </li>
     );
   }
