@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import InsertForm from "./components/InsertForm";
-import TodoList from "./components/TodoList";
+import TodosContainer from "./containers/TodosContainer";
 
 class App extends Component {
   constructor(props) {
@@ -13,8 +12,7 @@ class App extends Component {
         <div className="wrapper">
           <header>TodoList</header>
           <div className="content">
-            <InsertForm />
-            <TodoList />
+            <TodosContainer />
           </div>
         </div>
       </div>
