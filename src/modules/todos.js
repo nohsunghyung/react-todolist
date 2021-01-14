@@ -1,3 +1,5 @@
+import { createAction, handleActions } from "redux-actions";
+
 // 액션타입
 const CHANGE_INPUT = "todos/CHANGE_INPUT";
 const INSERT = "todos/INSERT";
@@ -9,48 +11,70 @@ const UPDATE_TODO = "todos/UPDATE_TODO";
 // 액션함수
 
 // input 핸들
-export const onChangeInput = (value) => ({
-  type: CHANGE_INPUT,
-  value,
-});
+// export const onChangeInput = (value) => ({
+//   type: CHANGE_INPUT,
+//   value,
+// });
+
+export const onChangeInput = createAction(CHANGE_INPUT, (value) => value);
 
 let nextId = 4;
 
-// 리스트 추가
-export const addTodo = (text) => ({
-  type: INSERT,
-  todo: {
+export const addTodo = createAction(INSERT, (text) => {
+  return {
     id: nextId++,
     text,
     isComplete: false,
     isEditActive: false,
-  },
+  };
 });
 
-// 완료 핸들
-export const onChangeComplete = (id) => ({
-  type: TOGGLE_COMPLETE,
-  id,
-});
+export const onChangeComplete = createAction(TOGGLE_COMPLETE, (id) => id);
 
-// 삭제 핸들
-export const deleteItem = (id) => ({
-  type: DELETE,
-  id,
-});
+export const deleteItem = createAction(DELETE, (id) => id);
 
-// 수정폼 토글
-export const onChangeEdit = (id) => ({
-  type: TOGGLE_EDIT,
-  id,
-});
+export const onChangeEdit = createAction(TOGGLE_EDIT, (id) => id);
 
-// 수정하기 핸들
-export const updateTodo = (id, text) => ({
-  type: UPDATE_TODO,
+export const updateTodo = createAction(UPDATE_TODO, (id, text) => ({
   id,
   text,
-});
+}));
+
+// 리스트 추가
+// export const addTodo = (text) => ({
+//   type: INSERT,
+//   todo: {
+//     id: nextId++,
+//     text,
+//     isComplete: false,
+//     isEditActive: false,
+//   },
+// });
+
+// 완료 핸들
+// export const onChangeComplete = (id) => ({
+//   type: TOGGLE_COMPLETE,
+//   id,
+// });
+
+// 삭제 핸들
+// export const deleteItem = (id) => ({
+//   type: DELETE,
+//   id,
+// });
+
+// 수정폼 토글
+// export const onChangeEdit = (id) => ({
+//   type: TOGGLE_EDIT,
+//   id,
+// });
+
+// 수정하기 핸들
+// export const updateTodo = (id, text) => ({
+//   type: UPDATE_TODO,
+//   id,
+//   text,
+// });
 
 // 초기 state
 const initialState = {
@@ -62,58 +86,97 @@ const initialState = {
   ],
 };
 
+const todos = handleActions(
+  {
+    [CHANGE_INPUT]: (state, { payload: value }) => ({
+      ...state,
+      inputValue: value,
+    }),
+    [INSERT]: (state, { payload: todo }) => ({
+      ...state,
+      todos: state.todos.concat(todo),
+    }),
+    [TOGGLE_COMPLETE]: (state, { payload: id }) => ({
+      ...state,
+      todos: state.todos.map((info) =>
+        info.id === id ? { ...info, isComplete: !info.isComplete } : info
+      ),
+    }),
+    [DELETE]: (state, { payload: id }) => ({
+      ...state,
+      todos: state.todos.filter((info) => (info.id !== id ? info : null)),
+    }),
+    [TOGGLE_EDIT]: (state, { payload: id }) => ({
+      ...state,
+      todos: state.todos.map((info) =>
+        info.id === id ? { ...info, isEditActive: !info.isEditActive } : info
+      ),
+    }),
+    [UPDATE_TODO]: (state, { payload: { id, text } }) => {
+      return {
+        ...state,
+        todos: state.todos.map((info) =>
+          info.id === id ? { ...info, text: text, isEditActive: false } : info
+        ),
+      };
+    },
+  },
+  initialState
+);
+
 // 리듀서 함수
-const todos = (state = initialState, action) => {
-  const { todos } = state;
-  switch (action.type) {
-    case CHANGE_INPUT:
-      return {
-        ...state,
-        inputValue: action.value,
-      };
-    case INSERT:
-      return {
-        ...state,
-        todos: todos.concat(action.todo),
-      };
-    case TOGGLE_COMPLETE:
-      return {
-        ...state,
-        todos: todos.map((info) =>
-          info.id === action.id
-            ? { ...info, isComplete: !info.isComplete }
-            : info
-        ),
-      };
-    case DELETE:
-      const newLists = todos.filter((info) =>
-        info.id !== action.id ? info : null
-      );
-      return {
-        ...state,
-        todos: newLists,
-      };
-    case TOGGLE_EDIT:
-      return {
-        ...state,
-        todos: todos.map((info) =>
-          info.id === action.id
-            ? { ...info, isEditActive: !info.isEditActive }
-            : info
-        ),
-      };
-    case UPDATE_TODO:
-      return {
-        ...state,
-        todos: todos.map((info) =>
-          info.id === action.id
-            ? { ...info, text: action.text, isEditActive: false }
-            : info
-        ),
-      };
-    default:
-      return state;
-  }
-};
+// const todos = (state = initialState, action) => {
+//   const { todos } = state;
+//   switch (action.type) {
+//     case CHANGE_INPUT:
+//       console.log(action.payload);
+//       return {
+//         ...state,
+//         inputValue: action.value,
+//       };
+//     case INSERT:
+//       return {
+//         ...state,
+//         todos: todos.concat(action.todo),
+//       };
+//     case TOGGLE_COMPLETE:
+//       return {
+//         ...state,
+//         todos: todos.map((info) =>
+//           info.id === action.id
+//             ? { ...info, isComplete: !info.isComplete }
+//             : info
+//         ),
+//       };
+//     case DELETE:
+//       const newLists = todos.filter((info) =>
+//         info.id !== action.id ? info : null
+//       );
+//       return {
+//         ...state,
+//         todos: newLists,
+//       };
+//     case TOGGLE_EDIT:
+//       return {
+//         ...state,
+//         todos: todos.map((info) =>
+//           info.id === action.id
+//             ? { ...info, isEditActive: !info.isEditActive }
+//             : info
+//         ),
+//       };
+//     case UPDATE_TODO:
+//       return {
+//         ...state,
+//         todos: todos.map((info) =>
+//           info.id === action.id
+//             ? { ...info, text: action.text, isEditActive: false }
+//             : info
+//         ),
+//       };
+//     default:
+//       return state;
+//   }
+// };
 
 export default todos;
