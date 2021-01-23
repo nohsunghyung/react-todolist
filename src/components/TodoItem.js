@@ -2,9 +2,10 @@ import React, { Component } from "react";
 
 class TodoItem extends Component {
   render() {
+    const { list } = this.props;
     return (
       <li className="list-item">
-        <div className="text">todoList</div>
+        <div className="text">{list.text}</div>
         {/* 수정 */}
         {/* <div>
                 <input
